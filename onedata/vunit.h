@@ -92,7 +92,7 @@ class nebrcount_t {
 class sdegree_t {
  public:
     degree_t add_count;
-    uint16_t del_count;
+    uint32_t del_count;
 public:
     inline sdegree_t(degree_t degree = 0) {
         add_count = 0;
