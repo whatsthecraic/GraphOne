@@ -39,7 +39,7 @@ void strkv_t::setup(tid_t t, vid_t v_count)
     assert(v_count); 
     kv = (sid_t*)calloc(sizeof(sid_t), v_count);
     
-    mem.setup(1L<<28);
+    mem.setup(1L<<29);
     /*
     if (posix_memalign((void**) &dvt, 2097152, dvt_max_count*sizeof(disk_strkv_t*))) {
         perror("posix memalign vertex log");
