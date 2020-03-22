@@ -90,7 +90,7 @@ void snap_t<T>::handle_flagu()
     bool is_stale = IS_STALE(flag);
     bool is_simple = IS_SIMPLE(flag);
     if (false == is_stale && (true == is_simple)) {
-        #pragma omp for
+//        #pragma omp for
         for (index_t i = 0; i < edge_count; ++i) {
             src_vid = TO_VID(get_src(edges[i]));
             dst_vid = TO_VID(get_dst(edges[i]));
