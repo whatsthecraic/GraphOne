@@ -1,10 +1,29 @@
 #pragma once
 #include <algorithm>
+#include <atomic>
+#include <iostream>
 #include "mem_pool.h"
 #include "out_going.h"
 #include "onesnb.h"
 
 using std::min;
+
+#if defined(GRAPHONE_COUNTERS)
+extern std::atomic<uint64_t> g_graphone_get_nbrs;
+extern std::atomic<uint64_t> g_graphone_get_adjlist;
+inline
+void graphone_clear_counters (){
+    g_graphone_get_nbrs = 0;
+    g_graphone_get_adjlist = 0;
+}
+
+inline
+void graphone_print_counters(){
+    using namespace std;
+    cout << "[graphone] counter get_nbrs: " << g_graphone_get_nbrs << endl;
+    cout << "[graphone] counter get_adjlist: " << g_graphone_get_adjlist << endl;
+}
+#endif
 
 template <class T>
 void onegraph_t<T>::archive(edgeT_t<T>* edges, index_t count, snapid_t a_snapid)
@@ -296,6 +315,10 @@ status_t onegraph_t<T>::evict_old_adjlist(vid_t vid, degree_t degree)
 template <class T>
 degree_t onegraph_t<T>::get_nebrs(vid_t vid, T* ptr, sdegree_t count/*,edgeT_t<T>* edges, index_t marker*/)
 {
+#if defined(GRAPHONE_COUNTERS)
+    g_graphone_get_nbrs ++;
+#endif
+
     vunit_t<T>* v_unit = get_vunit(vid); 
     if (v_unit == 0) return 0;
 
@@ -313,6 +336,10 @@ degree_t onegraph_t<T>::get_nebrs(vid_t vid, T* ptr, sdegree_t count/*,edgeT_t<T
     
     if (0 == del_count) {
         while (delta_adjlist != 0 && delta_degree > 0) {
+#if defined(GRAPHONE_COUNTERS)
+            g_graphone_get_adjlist ++;
+#endif
+
             local_adjlist = delta_adjlist->get_adjlist();
             local_degree = delta_adjlist->get_nebrcount();
             i_count = min(local_degree, delta_degree);
@@ -340,6 +367,11 @@ degree_t onegraph_t<T>::get_nebrs(vid_t vid, T* ptr, sdegree_t count/*,edgeT_t<T
         bool is_del = false;
 
         while (delta_adjlist != 0 && delta_degree > 0) {
+
+#if defined(GRAPHONE_COUNTERS)
+            g_graphone_get_adjlist ++;
+#endif
+
             local_adjlist = delta_adjlist->get_adjlist();
             local_degree = delta_adjlist->get_nebrcount();
             i_count = min(local_degree, delta_degree);
