@@ -69,14 +69,14 @@ class typekv_t : public cfinfo_t {
     }
 
     // Temporary hack to update the number of vertices in a dense graph
-    inline void gfe_hack_update_num_vertices(tid_t type, uint64_t vertex_id){
-        uint64_t num_vertices_old = get_type_vcount(0);
-        uint64_t num_vertices_new = vertex_id +1;
+    inline void gfe_hack_update_num_vertices(tid_t type, vid_t vertex_id){
+        vid_t num_vertices_old = get_type_vcount(0);
+        vid_t num_vertices_new = vertex_id +1;
 
         if(num_vertices_new > num_vertices_old){
-            uint64_t* pointer = &(t_info[type].vert_id);
-            uint64_t* expected = &num_vertices_old;
-            uint64_t* desired = &num_vertices_new;
+            vid_t* pointer = &(t_info[type].vert_id);
+            vid_t* expected = &num_vertices_old;
+            vid_t* desired = &num_vertices_new;
             while(!__atomic_compare_exchange(pointer, expected, desired, /* the rest of params are ignored in AMD64 */ false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) && num_vertices_new > num_vertices_old){
                 /* repeat ... */
             }
